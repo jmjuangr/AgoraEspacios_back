@@ -1,0 +1,12 @@
+C:\Users\Jose M\Documents\DAW\SAN VALERO\Proyecto final DAW\AgoraEspacios_back\AgoraEspacios.Models\bin\Debug\net8.0\AgoraEspacios.Models.deps.json
+C:\Users\Jose M\Documents\DAW\SAN VALERO\Proyecto final DAW\AgoraEspacios_back\AgoraEspacios.Models\bin\Debug\net8.0\AgoraEspacios.Models.dll
+C:\Users\Jose M\Documents\DAW\SAN VALERO\Proyecto final DAW\AgoraEspacios_back\AgoraEspacios.Models\bin\Debug\net8.0\AgoraEspacios.Models.pdb
+C:\Users\Jose M\Documents\DAW\SAN VALERO\Proyecto final DAW\AgoraEspacios_back\AgoraEspacios.Models\obj\Debug\net8.0\AgoraEspacios.Models.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Jose M\Documents\DAW\SAN VALERO\Proyecto final DAW\AgoraEspacios_back\AgoraEspacios.Models\obj\Debug\net8.0\AgoraEspacios.Models.AssemblyInfoInputs.cache
+C:\Users\Jose M\Documents\DAW\SAN VALERO\Proyecto final DAW\AgoraEspacios_back\AgoraEspacios.Models\obj\Debug\net8.0\AgoraEspacios.Models.AssemblyInfo.cs
+C:\Users\Jose M\Documents\DAW\SAN VALERO\Proyecto final DAW\AgoraEspacios_back\AgoraEspacios.Models\obj\Debug\net8.0\AgoraEspacios.Models.csproj.CoreCompileInputs.cache
+C:\Users\Jose M\Documents\DAW\SAN VALERO\Proyecto final DAW\AgoraEspacios_back\AgoraEspacios.Models\obj\Debug\net8.0\AgoraEspacios.Models.sourcelink.json
+C:\Users\Jose M\Documents\DAW\SAN VALERO\Proyecto final DAW\AgoraEspacios_back\AgoraEspacios.Models\obj\Debug\net8.0\AgoraEspacios.Models.dll
+C:\Users\Jose M\Documents\DAW\SAN VALERO\Proyecto final DAW\AgoraEspacios_back\AgoraEspacios.Models\obj\Debug\net8.0\refint\AgoraEspacios.Models.dll
+C:\Users\Jose M\Documents\DAW\SAN VALERO\Proyecto final DAW\AgoraEspacios_back\AgoraEspacios.Models\obj\Debug\net8.0\AgoraEspacios.Models.pdb
+C:\Users\Jose M\Documents\DAW\SAN VALERO\Proyecto final DAW\AgoraEspacios_back\AgoraEspacios.Models\obj\Debug\net8.0\ref\AgoraEspacios.Models.dll

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AgoraEspacios.Business")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6d05848ad32d19784fd26b8af90ab50987e56a3e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a0ed744ff9cb9a34d7036e19ded4190c253fce3e")]
 [assembly: System.Reflection.AssemblyProductAttribute("AgoraEspacios.Business")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AgoraEspacios.Business")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
