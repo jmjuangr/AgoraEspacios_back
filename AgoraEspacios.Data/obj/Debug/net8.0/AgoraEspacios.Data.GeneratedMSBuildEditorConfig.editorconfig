@@ -16,6 +16,6 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = AgoraEspacios.Data
-build_property.ProjectDir = c:\Users\Jose M\Documents\DAW\SAN VALERO\Proyecto final DAW\AgoraEspacios_back\AgoraEspacios.Data\
+build_property.ProjectDir = C:\Users\Jose M\Documents\DAW\SAN VALERO\Proyecto final DAW\AgoraEspacios_back\AgoraEspacios.Data\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

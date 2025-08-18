@@ -175,3 +175,4 @@ C:\Users\Jose M\Documents\DAW\SAN VALERO\Proyecto final DAW\AgoraEspacios_back\A
 C:\Users\Jose M\Documents\DAW\SAN VALERO\Proyecto final DAW\AgoraEspacios_back\AgoraEspacios.API\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\Jose M\Documents\DAW\SAN VALERO\Proyecto final DAW\AgoraEspacios_back\AgoraEspacios.API\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\Jose M\Documents\DAW\SAN VALERO\Proyecto final DAW\AgoraEspacios_back\AgoraEspacios.API\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
+C:\Users\Jose M\Documents\DAW\SAN VALERO\Proyecto final DAW\AgoraEspacios_back\AgoraEspacios.API\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
