@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using AgoraEspacios.Models.Enums;
 
 namespace AgoraEspacios.Models.Entities;
 
@@ -16,9 +15,9 @@ public class Usuario
     [Required]
     public string PasswordHash { get; set; } = default!;
 
-    [Required]
-    public Role Rol { get; set; } = Role.User;
+    [Required, MaxLength(20)]
+    public string Rol { get; set; } = "User";
 
-    
+
     public ICollection<Reserva> Reservas { get; set; } = new List<Reserva>();
 }

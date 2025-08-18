@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using AgoraEspacios.Models.Enums;
 
 namespace AgoraEspacios.Models.Entities;
 
@@ -19,11 +18,14 @@ public class Reserva
     [Required]
     public DateTime FechaFin { get; set; }
 
-    [Required]
-    public EstadoReserva Estado { get; set; } = EstadoReserva.Activa;
+
+    [Required, MaxLength(20)]
+    public string Estado { get; set; } = "Activa";
 
     [MaxLength(200)]
     public string? Titulo { get; set; }
+
+
     public Espacio? Espacio { get; set; }
     public Usuario? Usuario { get; set; }
 }
