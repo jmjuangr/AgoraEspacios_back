@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AgoraEspacios.Models")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a0ed744ff9cb9a34d7036e19ded4190c253fce3e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+243b7184184dcaf1c478bc96a5af5ddba0433fe5")]
 [assembly: System.Reflection.AssemblyProductAttribute("AgoraEspacios.Models")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AgoraEspacios.Models")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
