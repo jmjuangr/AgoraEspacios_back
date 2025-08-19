@@ -5,8 +5,8 @@ using System.Text;
 using AgoraEspacios.Business.Services;
 using AgoraEspacios.Data.Repositories;
 using AgoraEspacios.Data;
+using AgoraEspacios.Models.Entities;
 using Microsoft.EntityFrameworkCore;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +17,10 @@ builder.Services.AddDbContext<EspaciosDbContext>(options =>
 // Repositorios y servicios
 builder.Services.AddScoped<UsuarioRepository>();
 builder.Services.AddScoped<UsuarioService>();
+builder.Services.AddScoped<CategoriaEspacioRepository>();
+builder.Services.AddScoped<CategoriaEspacioService>();
+builder.Services.AddScoped<EspacioRepository>();
+builder.Services.AddScoped<EspacioService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -93,11 +97,26 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Migraciones automáticas
+// Migraciones automáticas + admin por defecto
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<EspaciosDbContext>();
     db.Database.Migrate();
+
+    // Usuario Admin inicial
+    if (!db.Usuarios.Any(u => u.Email == "admin@agoraespacios.com"))
+    {
+        var admin = new Usuario
+        {
+            Nombre = "Administrador",
+            Email = "admin@agoraespacios.com",
+            PasswordHash = "admin123", // ⚠️ Temporal, sin hash
+            Rol = "Admin"
+        };
+
+        db.Usuarios.Add(admin);
+        db.SaveChanges();
+    }
 }
 
 app.Run();
