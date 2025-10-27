@@ -14,6 +14,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<EspaciosDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+//CORS
+builder.Services.AddCors(options =>
+{
+options.AddPolicy("AllowAll", policy =>
+    policy.AllowAnyOrigin()
+          .AllowAnyHeader()
+          .AllowAnyMethod()
+);
+});
+
 // Repositorios y servicios
 builder.Services.AddScoped<UsuarioRepository>();
 builder.Services.AddScoped<UsuarioService>();
@@ -90,6 +100,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("AllowAll");
 
 // Activar autenticación/autorización
 app.UseAuthentication();

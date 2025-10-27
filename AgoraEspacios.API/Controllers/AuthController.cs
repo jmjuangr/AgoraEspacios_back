@@ -4,11 +4,13 @@ using AgoraEspacios.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace AgoraEspacios.API.Controllers
 {
@@ -27,6 +29,7 @@ namespace AgoraEspacios.API.Controllers
 
         // POST api/auth/register
         [HttpPost("register")]
+        [AllowAnonymous]
         public async Task<ActionResult<AuthResponse>> Register(RegisterRequest dto)
         {
             // Verificar si ya existe un usuario con ese email
@@ -65,6 +68,7 @@ namespace AgoraEspacios.API.Controllers
 
         // POST api/auth/login
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<ActionResult<AuthResponse>> Login(LoginRequest dto)
         {
             var usuario = await _usuarioService.GetByEmailAsync(dto.Email);
@@ -98,6 +102,7 @@ namespace AgoraEspacios.API.Controllers
             {
                 new Claim(JwtRegisteredClaimNames.Sub, usuario.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, usuario.Email),
+                new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
                 new Claim(ClaimTypes.Role, usuario.Rol)
             };
 
