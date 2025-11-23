@@ -54,6 +54,7 @@ namespace AgoraEspacios.Business.Services
                 return (false, "Ya existe otra categoría con este nombre.");
 
             existing.Nombre = categoria.Nombre;
+            existing.Descripcion = categoria.Descripcion;
             await _repository.UpdateAsync(existing);
 
             return (true, "Categoría actualizada correctamente.");

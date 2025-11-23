@@ -82,8 +82,8 @@ namespace AgoraEspacios.API.Controllers
             if (!esAdmin && actual.UsuarioId != usuarioId)
                 return Forbid();
 
-            reserva.Id = id; // asegurar que edita la correcta
-            reserva.UsuarioId = actual.UsuarioId; // mantener el dueño
+            reserva.Id = id;
+            reserva.UsuarioId = actual.UsuarioId;
 
             var error = await _reservaService.UpdateAsync(reserva);
             if (error != null) return BadRequest(error);

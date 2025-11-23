@@ -6,10 +6,12 @@ namespace AgoraEspacios.Business.Services
     public class ReservaService
     {
         private readonly ReservaRepository _reservaRepo;
+        private readonly EspacioRepository _espacioRepo;
 
-        public ReservaService(ReservaRepository reservaRepo)
+        public ReservaService(ReservaRepository reservaRepo, EspacioRepository espacioRepo)
         {
             _reservaRepo = reservaRepo;
+            _espacioRepo = espacioRepo;
         }
 
 
@@ -37,14 +39,35 @@ namespace AgoraEspacios.Business.Services
             if (reserva.FechaFin <= reserva.FechaInicio)
                 return "La fecha de fin debe ser posterior a la de inicio.";
 
-            // Validar solapamientos
-            bool solapa = await _reservaRepo.ExisteSolapamientoAsync(reserva.EspacioId, reserva.FechaInicio, reserva.FechaFin);
-            if (solapa)
-                return "Ya existe una reserva en este espacio para el rango de fechas indicado.";
+            // Cargar el espacio
+            var espacio = await _espacioRepo.GetByIdAsync(reserva.EspacioId);
+            if (espacio == null)
+                return "El espacio indicado no existe.";
 
+            // Si el espacio necesita aprobación manual entonces reserva Pendiente
+            if (espacio.RequiereAprobacionAdmin)
+            {
+                reserva.Estado = "Pendiente";
+                await _reservaRepo.AddAsync(reserva);
+                return null;
+            }
+
+            // Si NO necesita aprobación manual:
+
+            bool solapa = await _reservaRepo.ExisteSolapamientoAsync(
+                reserva.EspacioId,
+                reserva.FechaInicio,
+                reserva.FechaFin
+            );
+
+            if (solapa)
+                return "Ya existe una reserva aprobada en este espacio para el rango de fechas indicado.";
+
+            reserva.Estado = "Aprobada";
             await _reservaRepo.AddAsync(reserva);
-            return null; // null = sin errores
+            return null;
         }
+
 
         // Editar reserva 
         public async Task<string?> UpdateAsync(Reserva reserva)
