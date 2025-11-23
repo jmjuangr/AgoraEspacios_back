@@ -14,6 +14,13 @@ namespace AgoraEspacios.Models.DTOs
         public string Ubicacion { get; set; }
         public string Descripcion { get; set; }
         public string ImagenUrl { get; set; }
+
+        // Accesibilidad y normas de uso
+        public bool EsAccesible { get; set; }
+        public string NormasUso { get; set; }
+
+        // Indica si este espacio requiere aprobación manual del admin
+        public bool RequiereAprobacionAdmin { get; set; }
     }
 
     public class EspacioCreateDTO
@@ -35,6 +42,14 @@ namespace AgoraEspacios.Models.DTOs
 
         [MaxLength(300)]
         public string ImagenUrl { get; set; }
+
+        // Accesibilidad y normas de uso
+        public bool EsAccesible { get; set; }
+
+        [MaxLength(1000)]
+        public string NormasUso { get; set; }
+
+        public bool RequiereAprobacionAdmin { get; set; }
     }
 
     public class EspacioUpdateDTO
@@ -56,5 +71,12 @@ namespace AgoraEspacios.Models.DTOs
 
         [MaxLength(300)]
         public string ImagenUrl { get; set; }
+
+        public bool EsAccesible { get; set; }
+
+        [MaxLength(1000)]
+        public string NormasUso { get; set; }
+
+        public bool RequiereAprobacionAdmin { get; set; }
     }
 }

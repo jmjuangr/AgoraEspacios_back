@@ -21,7 +21,13 @@ public class Espacio
     [MaxLength(500)]
     public string? Descripcion { get; set; }
 
-    // URL de imagen (para futura integración con almacenamiento)
+    // Indica si el espacio es accesible 
+    public bool EsAccesible { get; set; } = false;
+
+    // Indica si este espacio requiere aprobación manual del admin para cada reserva
+    public bool RequiereAprobacionAdmin { get; set; } = false;
+
+    // URL de imagen 
     [MaxLength(300)]
     public string? ImagenUrl { get; set; }
 

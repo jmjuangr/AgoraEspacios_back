@@ -16,7 +16,7 @@ namespace AgoraEspacios.Models.DTOs
         public DateTime FechaInicio { get; set; }
         public DateTime FechaFin { get; set; }
 
-        // "Activa" | "Cancelada"
+        // "Pendiente" | "Aprobada" | "Rechazada" | "Cancelada"
         public string Estado { get; set; }
 
         public string Titulo { get; set; }
@@ -47,7 +47,6 @@ namespace AgoraEspacios.Models.DTOs
 
         [MaxLength(200)]
         public string Titulo { get; set; }
-
 
         [Required, MaxLength(20)]
         public string Estado { get; set; }

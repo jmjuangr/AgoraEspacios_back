@@ -7,6 +7,7 @@ using AgoraEspacios.Data.Repositories;
 using AgoraEspacios.Data;
 using AgoraEspacios.Models.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,14 +15,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<EspaciosDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//CORS
+// CORS para permitir peticiones desde Vue
 builder.Services.AddCors(options =>
 {
-options.AddPolicy("AllowAll", policy =>
-    policy.AllowAnyOrigin()
-          .AllowAnyHeader()
-          .AllowAnyMethod()
-);
+    options.AddPolicy("FrontendPolicy", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
 });
 
 // Repositorios y servicios
@@ -31,8 +34,17 @@ builder.Services.AddScoped<CategoriaEspacioRepository>();
 builder.Services.AddScoped<CategoriaEspacioService>();
 builder.Services.AddScoped<EspacioRepository>();
 builder.Services.AddScoped<EspacioService>();
+builder.Services.AddScoped<ReservaRepository>();
+builder.Services.AddScoped<ReservaService>();
 
-builder.Services.AddControllers();
+
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.WriteIndented = true;
+});
+
+// Necesario para Swagger
 builder.Services.AddEndpointsApiExplorer();
 
 // Swagger con JWT
@@ -100,7 +112,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors("AllowAll");
+app.UseCors("FrontendPolicy");
 
 // Activar autenticación/autorización
 app.UseAuthentication();
@@ -121,7 +133,7 @@ using (var scope = app.Services.CreateScope())
         {
             Nombre = "Administrador",
             Email = "admin@agoraespacios.com",
-            PasswordHash = "admin123", // ⚠️ Temporal, sin hash
+            PasswordHash = "admin123",
             Rol = "Admin"
         };
 
