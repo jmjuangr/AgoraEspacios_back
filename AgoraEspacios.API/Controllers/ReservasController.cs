@@ -17,7 +17,6 @@ namespace AgoraEspacios.API.Controllers
             _reservaService = reservaService;
         }
 
-
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAll()
@@ -25,7 +24,6 @@ namespace AgoraEspacios.API.Controllers
             var reservas = await _reservaService.GetAllAsync();
             return Ok(reservas);
         }
-
 
         [HttpGet("mias")]
         [Authorize(Roles = "User,Admin")]
@@ -36,6 +34,14 @@ namespace AgoraEspacios.API.Controllers
             return Ok(reservas);
         }
 
+        // Reservas por espacio                                                                                                                                                                                                                                                                                      
+        [HttpGet("espacio/{espacioId}")]
+        [Authorize(Roles = "User,Admin")]
+        public async Task<IActionResult> GetByEspacio(int espacioId)
+        {
+            var reservas = await _reservaService.GetByEspacioAsync(espacioId);
+            return Ok(reservas);
+        }
 
         [HttpGet("{id}")]
         [Authorize(Roles = "User,Admin")]
@@ -43,7 +49,6 @@ namespace AgoraEspacios.API.Controllers
         {
             var reserva = await _reservaService.GetByIdAsync(id);
             if (reserva == null) return NotFound();
-
 
             var usuarioId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             var esAdmin = User.IsInRole("Admin");
@@ -54,12 +59,11 @@ namespace AgoraEspacios.API.Controllers
             return Ok(reserva);
         }
 
-
         [HttpPost]
         [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> Create([FromBody] Reserva reserva)
         {
-            // asignar usuario actual
+            // asignar usuario actual                                                                                                                                                                                                                                                                                
             reserva.UsuarioId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
             var error = await _reservaService.CreateAsync(reserva);
@@ -67,7 +71,6 @@ namespace AgoraEspacios.API.Controllers
 
             return Ok(reserva);
         }
-
 
         [HttpPut("{id}")]
         [Authorize(Roles = "User,Admin")]
@@ -91,7 +94,7 @@ namespace AgoraEspacios.API.Controllers
             return Ok(reserva);
         }
 
-        // Eliminar reserva
+        // Eliminar reserva                                                                                                                                                                                                                                                                                          
         [HttpDelete("{id}")]
         [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> Delete(int id)

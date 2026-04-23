@@ -14,28 +14,31 @@ namespace AgoraEspacios.Business.Services
             _espacioRepo = espacioRepo;
         }
 
-
         public async Task<List<Reserva>> GetAllAsync()
         {
             return await _reservaRepo.GetAllAsync();
         }
-
 
         public async Task<List<Reserva>> GetByUsuarioAsync(int usuarioId)
         {
             return await _reservaRepo.GetByUsuarioIdAsync(usuarioId);
         }
 
+        // Reservas por espacio                                                                                                                                                                                                                                                                                      
+        public async Task<List<Reserva>> GetByEspacioAsync(int espacioId)
+        {
+            return await _reservaRepo.GetByEspacioIdAsync(espacioId);
+        }
 
         public async Task<Reserva?> GetByIdAsync(int id)
         {
             return await _reservaRepo.GetByIdAsync(id);
         }
 
-        // Crear reserva con validaciones
+        // Crear reserva con validaciones                                                                                                                                                                                                                                                                            
         public async Task<string?> CreateAsync(Reserva reserva)
         {
-            // Validar fechas
+            // Validar fechas                                                                                                                                                                                                                                                                                        
             if (reserva.FechaFin <= reserva.FechaInicio)
                 return "La fecha de fin debe ser posterior a la de inicio.";
 
@@ -44,7 +47,7 @@ namespace AgoraEspacios.Business.Services
             if (espacio == null)
                 return "El espacio indicado no existe.";
 
-            // Si el espacio necesita aprobación manual entonces reserva Pendiente
+            // Si el espacio necesita aprobación manual entonces reserva Pendiente                                                                                                                                                                                                                                   
             if (espacio.RequiereAprobacionAdmin)
             {
                 reserva.Estado = "Pendiente";
@@ -52,7 +55,7 @@ namespace AgoraEspacios.Business.Services
                 return null;
             }
 
-            // Si NO necesita aprobación manual:
+            // Si NO necesita aprobación manual:                                                                                                                                                                                                                                                                     
 
             bool solapa = await _reservaRepo.ExisteSolapamientoAsync(
                 reserva.EspacioId,
@@ -68,21 +71,25 @@ namespace AgoraEspacios.Business.Services
             return null;
         }
 
-
-        // Editar reserva 
+        // Editar reserva                                                                                                                                                                                                                                                                                            
         public async Task<string?> UpdateAsync(Reserva reserva)
         {
             if (reserva.FechaFin <= reserva.FechaInicio)
                 return "La fecha de fin debe ser posterior a la de inicio.";
 
-            bool solapa = await _reservaRepo.ExisteSolapamientoAsync(reserva.EspacioId, reserva.FechaInicio, reserva.FechaFin, reserva.Id);
+            bool solapa = await _reservaRepo.ExisteSolapamientoAsync(
+                reserva.EspacioId,
+                reserva.FechaInicio,
+                reserva.FechaFin,
+                reserva.Id
+            );
+
             if (solapa)
                 return "Ya existe otra reserva en este espacio para el rango de fechas indicado.";
 
             await _reservaRepo.UpdateAsync(reserva);
             return null;
         }
-
 
         public async Task DeleteAsync(Reserva reserva)
         {

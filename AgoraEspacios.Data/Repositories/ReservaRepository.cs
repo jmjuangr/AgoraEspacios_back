@@ -12,7 +12,6 @@ namespace AgoraEspacios.Data.Repositories
             _context = context;
         }
 
-
         public async Task<List<Reserva>> GetAllAsync()
         {
             return await _context.Reservas
@@ -20,7 +19,6 @@ namespace AgoraEspacios.Data.Repositories
                 .Include(r => r.Espacio)
                 .ToListAsync();
         }
-
 
         public async Task<List<Reserva>> GetByUsuarioIdAsync(int usuarioId)
         {
@@ -30,6 +28,19 @@ namespace AgoraEspacios.Data.Repositories
                 .ToListAsync();
         }
 
+        // Reservas por espacio                                                                                                                                                                                                                                                                                      
+        public async Task<List<Reserva>> GetByEspacioIdAsync(int espacioId)
+        {
+            return await _context.Reservas
+                .Include(r => r.Usuario)
+                .Include(r => r.Espacio)
+                .Where(r =>
+                    r.EspacioId == espacioId &&
+                    r.Estado != "Cancelada" &&
+                    r.Estado != "Rechazada")
+                .OrderBy(r => r.FechaInicio)
+                .ToListAsync();
+        }
 
         public async Task<Reserva?> GetByIdAsync(int id)
         {
@@ -39,13 +50,11 @@ namespace AgoraEspacios.Data.Repositories
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
-
         public async Task AddAsync(Reserva reserva)
         {
             _context.Reservas.Add(reserva);
             await _context.SaveChangesAsync();
         }
-
 
         public async Task UpdateAsync(Reserva reserva)
         {
@@ -53,19 +62,24 @@ namespace AgoraEspacios.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-
         public async Task DeleteAsync(Reserva reserva)
         {
             _context.Reservas.Remove(reserva);
             await _context.SaveChangesAsync();
         }
 
-        // Buscar reservas solapadas
-        public async Task<bool> ExisteSolapamientoAsync(int espacioId, DateTime inicio, DateTime fin, int? reservaId = null)
+        // Buscar reservas solapadas                                                                                                                                                                                                                                                                                 
+        public async Task<bool> ExisteSolapamientoAsync(
+            int espacioId,
+            DateTime inicio,
+            DateTime fin,
+            int? reservaId = null)
         {
             return await _context.Reservas.AnyAsync(r =>
                 r.EspacioId == espacioId &&
                 (reservaId == null || r.Id != reservaId) &&
+                r.Estado != "Cancelada" &&
+                r.Estado != "Rechazada" &&
                 r.FechaInicio < fin &&
                 r.FechaFin > inicio
             );
