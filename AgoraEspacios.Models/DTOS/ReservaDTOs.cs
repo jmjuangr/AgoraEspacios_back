@@ -8,18 +8,18 @@ namespace AgoraEspacios.Models.DTOs
         public int Id { get; set; }
 
         public int EspacioId { get; set; }
-        public string EspacioNombre { get; set; }
+        public string EspacioNombre { get; set; } = string.Empty;
 
         public int UsuarioId { get; set; }
-        public string UsuarioNombre { get; set; }
+        public string UsuarioNombre { get; set; } = string.Empty;
 
         public DateTime FechaInicio { get; set; }
         public DateTime FechaFin { get; set; }
 
         // "Pendiente" | "Aprobada" | "Rechazada" | "Cancelada"
-        public string Estado { get; set; }
+        public string Estado { get; set; } = string.Empty;
 
-        public string Titulo { get; set; }
+        public string? Titulo { get; set; }
     }
 
     public class ReservaCreateDTO
@@ -34,7 +34,7 @@ namespace AgoraEspacios.Models.DTOs
         public DateTime FechaFin { get; set; }
 
         [MaxLength(200)]
-        public string Titulo { get; set; }
+        public string? Titulo { get; set; }
     }
 
     public class ReservaUpdateDTO
@@ -46,9 +46,6 @@ namespace AgoraEspacios.Models.DTOs
         public DateTime FechaFin { get; set; }
 
         [MaxLength(200)]
-        public string Titulo { get; set; }
-
-        [Required, MaxLength(20)]
-        public string Estado { get; set; }
+        public string? Titulo { get; set; }
     }
 }

@@ -68,8 +68,8 @@ namespace AgoraEspacios.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-        // Buscar reservas solapadas                                                                                                                                                                                                                                                                                 
-        public async Task<bool> ExisteSolapamientoAsync(
+        // Buscar reservas aprobadas solapadas
+        public async Task<bool> ExisteSolapamientoAprobadoAsync(
             int espacioId,
             DateTime inicio,
             DateTime fin,
@@ -78,8 +78,7 @@ namespace AgoraEspacios.Data.Repositories
             return await _context.Reservas.AnyAsync(r =>
                 r.EspacioId == espacioId &&
                 (reservaId == null || r.Id != reservaId) &&
-                r.Estado != "Cancelada" &&
-                r.Estado != "Rechazada" &&
+                r.Estado == "Aprobada" &&
                 r.FechaInicio < fin &&
                 r.FechaFin > inicio
             );

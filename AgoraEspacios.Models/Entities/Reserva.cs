@@ -20,7 +20,7 @@ public class Reserva
 
 
     [Required, MaxLength(20)]
-    public string Estado { get; set; } = "Activa";
+    public string Estado { get; set; } = "Pendiente";
 
     [MaxLength(200)]
     public string? Titulo { get; set; }
