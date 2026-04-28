@@ -62,20 +62,34 @@ namespace AgoraEspacios.Business.Services
             return null;
         }
 
-        public async Task<string?> UpdateAsync(Reserva reserva)
+        public async Task<string?> UpdateAsync(Reserva reserva, bool esAdmin)
         {
             if (reserva.FechaFin <= reserva.FechaInicio)
                 return "La fecha de fin debe ser posterior a la de inicio.";
 
-            bool solapa = await _reservaRepo.ExisteSolapamientoAprobadoAsync(
-                reserva.EspacioId,
-                reserva.FechaInicio,
-                reserva.FechaFin,
-                reserva.Id
-            );
+            if (reserva.Estado == EstadoCancelada || reserva.Estado == EstadoRechazada)
+                return "No se pueden modificar reservas canceladas o rechazadas.";
 
-            if (solapa)
-                return "Ya existe otra reserva aprobada en este espacio para el rango de fechas indicado.";
+            if (reserva.Estado != EstadoPendiente && reserva.Estado != EstadoAprobada)
+                return "Solo se pueden modificar reservas pendientes o aprobadas.";
+
+            if (reserva.Estado == EstadoAprobada && !esAdmin)
+            {
+                reserva.Estado = EstadoPendiente;
+            }
+
+            if (reserva.Estado == EstadoAprobada)
+            {
+                bool solapa = await _reservaRepo.ExisteSolapamientoAprobadoAsync(
+                    reserva.EspacioId,
+                    reserva.FechaInicio,
+                    reserva.FechaFin,
+                    reserva.Id
+                );
+
+                if (solapa)
+                    return "Ya existe otra reserva aprobada en este espacio para el rango de fechas indicado.";
+            }
 
             await _reservaRepo.UpdateAsync(reserva);
             return null;

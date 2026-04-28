@@ -95,7 +95,7 @@ namespace AgoraEspacios.API.Controllers
             reserva.FechaFin = dto.FechaFin;
             reserva.Titulo = dto.Titulo;
 
-            var error = await _reservaService.UpdateAsync(reserva);
+            var error = await _reservaService.UpdateAsync(reserva, esAdmin);
             if (error != null) return BadRequest(error);
 
             return Ok(reserva);
