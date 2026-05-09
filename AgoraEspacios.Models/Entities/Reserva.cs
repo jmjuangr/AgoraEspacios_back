@@ -18,6 +18,8 @@ public class Reserva
     [Required]
     public DateTime FechaFin { get; set; }
 
+    [Required]
+    public DateTime FechaCreacion { get; set; } = DateTime.UtcNow;
 
     [Required, MaxLength(20)]
     public string Estado { get; set; } = "Pendiente";

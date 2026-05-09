@@ -115,6 +115,9 @@ namespace AgoraEspacios.Data
                         // Campos obligatorios
                         entity.Property(r => r.FechaInicio).IsRequired();
                         entity.Property(r => r.FechaFin).IsRequired();
+                        entity.Property(r => r.FechaCreacion)
+                              .IsRequired()
+                              .HasDefaultValueSql("GETUTCDATE()");
 
                         // Estado 
                         entity.Property(r => r.Estado)
