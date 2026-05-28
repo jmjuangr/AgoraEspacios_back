@@ -80,5 +80,37 @@ namespace AgoraEspacios.API.Controllers
 
             return Ok(result);
         }
+
+        // PUT api/usuario/{id}
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> Update(int id, UsuarioUpdateDTO dto)
+        {
+            var usuario = new Usuario
+            {
+                Id = id,
+                Nombre = dto.Nombre,
+                Email = dto.Email,
+                Rol = dto.Rol
+            };
+
+            var result = await _usuarioService.UpdateAsync(usuario);
+            if (!result.Success)
+                return BadRequest(result.Message);
+
+            return Ok(result.Message);
+        }
+
+        // DELETE api/usuario/{id}
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var result = await _usuarioService.DeleteAsync(id);
+            if (!result.Success)
+                return NotFound(result.Message);
+
+            return Ok(result.Message);
+        }
     }
 }
