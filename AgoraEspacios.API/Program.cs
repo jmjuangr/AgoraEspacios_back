@@ -8,19 +8,22 @@ using AgoraEspacios.Data;
 using AgoraEspacios.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Conexión BD
+// Conexion BD
 builder.Services.AddDbContext<EspaciosDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// CORS para permitir peticiones desde Vue
+// CORS
+var frontendUrl = builder.Configuration["Frontend:Url"] ?? "http://localhost:5173";
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("FrontendPolicy", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins(frontendUrl)
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -37,17 +40,15 @@ builder.Services.AddScoped<EspacioService>();
 builder.Services.AddScoped<ReservaRepository>();
 builder.Services.AddScoped<ReservaService>();
 
-
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     options.JsonSerializerOptions.WriteIndented = true;
 });
 
-// Necesario para Swagger
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 
-// Swagger con JWT
 builder.Services.AddSwaggerGen(opt =>
 {
     opt.SwaggerDoc("v1", new OpenApiInfo { Title = "AgoraEspacios API", Version = "v1" });
@@ -73,7 +74,7 @@ builder.Services.AddSwaggerGen(opt =>
                     Id = "Bearer"
                 }
             },
-            new string[] {}
+            Array.Empty<string>()
         }
     });
 });
@@ -81,6 +82,11 @@ builder.Services.AddSwaggerGen(opt =>
 // JWT Authentication
 var jwtConfig = builder.Configuration.GetSection("Jwt");
 var claveSecreta = jwtConfig["Key"];
+
+if (string.IsNullOrWhiteSpace(claveSecreta))
+{
+    throw new InvalidOperationException("No se ha configurado Key JWT");
+}
 
 builder.Services.AddAuthentication(options =>
 {
@@ -98,14 +104,22 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = jwtConfig["Issuer"],
         ValidAudience = jwtConfig["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(claveSecreta!))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(claveSecreta))
     };
 });
 
 var app = builder.Build();
 
-// Swagger
-if (app.Environment.IsDevelopment())
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
+//permite activar swagger en prod
+var swaggerEnabled = app.Environment.IsDevelopment()
+    || builder.Configuration.GetValue<bool>("Swagger:Enabled");
+
+if (swaggerEnabled)
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -114,26 +128,27 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("FrontendPolicy");
 
-// Activar autenticación/autorización
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
-// Migraciones automáticas + admin por defecto
+// Migraciones y creo user admin por defecto
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<EspaciosDbContext>();
     db.Database.Migrate();
 
-    // Usuario Admin inicial
-    if (!db.Usuarios.Any(u => u.Email == "admin@agoraespacios.com"))
+    var adminPassword = builder.Configuration["AdminUser:Password"] ?? "admin123";
+    var admin = db.Usuarios.FirstOrDefault(u => u.Email == "admin@agoraespacios.com");
+
+    if (admin == null)
     {
-        var admin = new Usuario
+        admin = new Usuario
         {
             Nombre = "Administrador",
             Email = "admin@agoraespacios.com",
-            PasswordHash = "admin123",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(adminPassword),
             Rol = "Admin"
         };
 

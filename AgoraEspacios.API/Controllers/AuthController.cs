@@ -2,15 +2,11 @@ using AgoraEspacios.Business.Services;
 using AgoraEspacios.Models.DTOs;
 using AgoraEspacios.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
-
 
 namespace AgoraEspacios.API.Controllers
 {
@@ -32,25 +28,23 @@ namespace AgoraEspacios.API.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<AuthResponse>> Register(RegisterRequest dto)
         {
-            // Verificar si ya existe un usuario con ese email
             var existente = await _usuarioService.GetByEmailAsync(dto.Email);
             if (existente != null)
             {
-                return BadRequest("El email ya está registrado.");
+                return BadRequest("El email ya esta registrado.");
             }
 
-            // Crear usuario nuevo (rol por defecto = User)
             var usuario = new Usuario
             {
                 Nombre = dto.Nombre,
                 Email = dto.Email,
-                PasswordHash = dto.Password,
+                // guardar el hash de la contraseña no contraseña en texto plano
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
                 Rol = "User"
             };
 
             await _usuarioService.CreateAsync(usuario);
 
-            // Generar token
             var tokenString = GenerateJwtToken(usuario);
 
             var response = new AuthResponse
@@ -72,12 +66,12 @@ namespace AgoraEspacios.API.Controllers
         public async Task<ActionResult<AuthResponse>> Login(LoginRequest dto)
         {
             var usuario = await _usuarioService.GetByEmailAsync(dto.Email);
-            if (usuario == null || usuario.PasswordHash != dto.Password)
+            // BCrypt compara la contraseña escrita con el hash guardado en bbd
+            if (usuario == null || !BCrypt.Net.BCrypt.Verify(dto.Password, usuario.PasswordHash))
             {
-                return Unauthorized("Credenciales inválidas.");
+                return Unauthorized("Credenciales invalidas.");
             }
 
-            // Generar token
             var tokenString = GenerateJwtToken(usuario);
 
             var response = new AuthResponse
@@ -93,10 +87,16 @@ namespace AgoraEspacios.API.Controllers
             return Ok(response);
         }
 
-
         private string GenerateJwtToken(Usuario usuario)
         {
             var jwtConfig = _configuration.GetSection("Jwt");
+            var clave = jwtConfig["Key"];
+
+            //sii no hay clave no se pueden firmar token JWT
+            if (string.IsNullOrWhiteSpace(clave))
+            {
+                throw new InvalidOperationException("No se ha configurado Jwt:Key.");
+            }
 
             var claims = new[]
             {
@@ -106,7 +106,7 @@ namespace AgoraEspacios.API.Controllers
                 new Claim(ClaimTypes.Role, usuario.Rol)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig["Key"]!));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(clave));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
