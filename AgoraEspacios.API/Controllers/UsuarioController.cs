@@ -64,7 +64,8 @@ namespace AgoraEspacios.API.Controllers
             {
                 Nombre = dto.Nombre,
                 Email = dto.Email,
-                PasswordHash = dto.Password,
+                // Guardar la contraseña hasheada
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
                 Rol = dto.Rol
             };
 
