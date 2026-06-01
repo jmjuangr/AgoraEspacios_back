@@ -24,7 +24,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
       ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=AgoraEspaciosDb;User Id=sa;Password=AgoraDocker123!;TrustServerCertificate=True"
-      Jwt__Key: "JWTKeyDeDesarrollo_123456789"
+      Jwt__Key: "JWTKeyDeDesarrollo_123456789_ClaveLarga"
       Frontend__Url: "http://localhost:5173"
       AdminUser__Password: "admin123"
       Swagger__Enabled: "true"
