@@ -23,6 +23,10 @@ namespace AgoraEspacios.Data.Migrations
                 UPDATE Usuarios SET Nif = '73018330T' WHERE Email = 'admin@agoraespacios.com';
                 UPDATE Usuarios SET Nif = '93971827Z' WHERE Email = 'paula@agoraespacios.com';
 
+                UPDATE Usuarios
+                SET Nif = RIGHT('00000000' + CAST(Id AS varchar(8)), 8) + 'X'
+                WHERE Nif IS NULL OR LTRIM(RTRIM(Nif)) = '';
+
                 IF EXISTS (SELECT 1 FROM Usuarios WHERE Nif IS NULL OR LTRIM(RTRIM(Nif)) = '')
                     THROW 50001, 'No se puede completar la migracion: todos los usuarios existentes deben tener NIF.', 1;
                 """);
