@@ -34,11 +34,17 @@ namespace AgoraEspacios.API.Controllers
                 return BadRequest("El email ya esta registrado.");
             }
 
+            if (await _usuarioService.ExistsByNifAsync(dto.Nif))
+            {
+                return BadRequest("El NIF ya esta registrado.");
+            }
+
             var usuario = new Usuario
             {
                 Nombre = dto.Nombre,
                 Email = dto.Email,
-                // guardar el hash de la contraseña no contraseña en texto plano
+                Nif = dto.Nif,
+                // guardar el hash de la contraseña no contraseñaa en texto plano
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
                 Rol = "User"
             };
@@ -52,6 +58,7 @@ namespace AgoraEspacios.API.Controllers
                 UsuarioId = usuario.Id,
                 Nombre = usuario.Nombre,
                 Email = usuario.Email,
+                Nif = usuario.Nif,
                 Rol = usuario.Rol,
                 Token = tokenString,
                 ExpiresAt = DateTime.UtcNow.AddHours(2)
@@ -79,6 +86,7 @@ namespace AgoraEspacios.API.Controllers
                 UsuarioId = usuario.Id,
                 Nombre = usuario.Nombre,
                 Email = usuario.Email,
+                Nif = usuario.Nif,
                 Rol = usuario.Rol,
                 Token = tokenString,
                 ExpiresAt = DateTime.UtcNow.AddHours(2)
@@ -92,7 +100,7 @@ namespace AgoraEspacios.API.Controllers
             var jwtConfig = _configuration.GetSection("Jwt");
             var clave = jwtConfig["Key"];
 
-            //sii no hay clave no se pueden firmar token JWT
+            // si no hay clave no se pueden firmar token JWT
             if (string.IsNullOrWhiteSpace(clave))
             {
                 throw new InvalidOperationException("No se ha configurado Jwt:Key.");

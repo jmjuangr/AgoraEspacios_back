@@ -39,6 +39,12 @@ builder.Services.AddScoped<EspacioRepository>();
 builder.Services.AddScoped<EspacioService>();
 builder.Services.AddScoped<ReservaRepository>();
 builder.Services.AddScoped<ReservaService>();
+// Servicio para poder llamar al webhook de n8n
+builder.Services.AddHttpClient<IN8nService, N8nService>(client =>
+{
+    // No espero demasiado si n8n no responde
+    client.Timeout = TimeSpan.FromSeconds(5);
+});
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -148,12 +154,43 @@ using (var scope = app.Services.CreateScope())
         {
             Nombre = "Administrador",
             Email = "admin@agoraespacios.com",
+            Nif = "73018330T",
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(adminPassword),
             Rol = "Admin"
         };
 
         db.Usuarios.Add(admin);
         db.SaveChanges();
+    }
+
+    var n8nEmail = builder.Configuration["N8nAdmin:Email"] ?? "n8n@agoraespacios.com";
+    var n8nPassword = builder.Configuration["N8nAdmin:Password"];
+    var n8nNif = builder.Configuration["N8nAdmin:Nif"];
+
+    // Usuario admin para que n8n pueda llamar a la API
+    if (!string.IsNullOrWhiteSpace(n8nPassword) && !string.IsNullOrWhiteSpace(n8nNif))
+    {
+        var n8nAdmin = db.Usuarios.FirstOrDefault(u => u.Email == n8nEmail);
+
+        if (n8nAdmin == null)
+        {
+            n8nAdmin = new Usuario
+            {
+                Nombre = "n8n",
+                Email = n8nEmail,
+                Nif = n8nNif.Trim().ToUpperInvariant(),
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(n8nPassword),
+                Rol = "Admin"
+            };
+
+            db.Usuarios.Add(n8nAdmin);
+            db.SaveChanges();
+        }
+        else if (n8nAdmin.Rol != "Admin")
+        {
+            n8nAdmin.Rol = "Admin";
+            db.SaveChanges();
+        }
     }
 }
 
