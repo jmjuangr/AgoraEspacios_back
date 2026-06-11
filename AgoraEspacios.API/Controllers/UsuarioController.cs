@@ -30,6 +30,7 @@ namespace AgoraEspacios.API.Controllers
                 Id = u.Id,
                 Nombre = u.Nombre,
                 Email = u.Email,
+                Nif = u.Nif,
                 Rol = u.Rol
             });
 
@@ -49,6 +50,7 @@ namespace AgoraEspacios.API.Controllers
                 Id = usuario.Id,
                 Nombre = usuario.Nombre,
                 Email = usuario.Email,
+                Nif = usuario.Nif,
                 Rol = usuario.Rol
             };
 
@@ -60,10 +62,16 @@ namespace AgoraEspacios.API.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<UsuarioDTO>> Create(UsuarioCreateDTO dto)
         {
+            if (await _usuarioService.ExistsByNifAsync(dto.Nif))
+            {
+                return BadRequest("El NIF ya esta registrado.");
+            }
+
             var usuario = new Usuario
             {
                 Nombre = dto.Nombre,
                 Email = dto.Email,
+                Nif = dto.Nif,
                 // Guardar la contraseña hasheada
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
                 Rol = dto.Rol
@@ -76,6 +84,7 @@ namespace AgoraEspacios.API.Controllers
                 Id = usuario.Id,
                 Nombre = usuario.Nombre,
                 Email = usuario.Email,
+                Nif = usuario.Nif,
                 Rol = usuario.Rol
             };
 
@@ -92,6 +101,7 @@ namespace AgoraEspacios.API.Controllers
                 Id = id,
                 Nombre = dto.Nombre,
                 Email = dto.Email,
+                Nif = dto.Nif,
                 Rol = dto.Rol
             };
 
