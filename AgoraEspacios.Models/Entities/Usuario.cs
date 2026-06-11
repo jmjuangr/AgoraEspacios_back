@@ -12,6 +12,10 @@ public class Usuario
     [Required, EmailAddress, MaxLength(120)]
     public string Email { get; set; } = default!;
 
+
+    [Required, MinLength(9), MaxLength(9)]
+    public string Nif { get; set; } = default!;
+
     [Required]
     public string PasswordHash { get; set; } = default!;
 

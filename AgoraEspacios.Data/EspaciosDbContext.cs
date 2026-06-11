@@ -36,8 +36,17 @@ namespace AgoraEspacios.Data
                         .IsRequired()
                         .HasMaxLength(120);
 
+
+                        entity.Property(u => u.Nif)
+                        .IsRequired()
+                        .HasMaxLength(9);
+
                         // indice unico para evitar emails duplicados
                         entity.HasIndex(u => u.Email)
+                        .IsUnique();
+
+                        // no puede haber nifs duplicados
+                        entity.HasIndex(u => u.Nif)
                         .IsUnique();
 
                         entity.Property(u => u.PasswordHash)

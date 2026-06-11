@@ -15,12 +15,20 @@ namespace AgoraEspacios.Business.Services
 
         private readonly ReservaRepository _reservaRepo;
         private readonly EspacioRepository _espacioRepo;
+        private readonly UsuarioRepository _usuarioRepo;
+        private readonly IN8nService _n8nService;
 
-        public ReservaService(ReservaRepository reservaRepo, EspacioRepository espacioRepo)
+        public ReservaService(
+            ReservaRepository reservaRepo,
+            EspacioRepository espacioRepo,
+            UsuarioRepository usuarioRepo,
+            IN8nService n8nService)
         {
 
             _reservaRepo = reservaRepo;
             _espacioRepo = espacioRepo;
+            _usuarioRepo = usuarioRepo;
+            _n8nService = n8nService;
         }
 
         public async Task<List<Reserva>> GetAllAsync()
@@ -71,6 +79,15 @@ namespace AgoraEspacios.Business.Services
             // Las reservas nuevas empiezan como pendientes hasta revision de admin
             reserva.Estado = EstadoPendiente;
             await _reservaRepo.AddAsync(reserva);
+
+            // Dse guarda reserva y se busca nif de usuario
+            var usuario = await _usuarioRepo.GetByIdAsync(reserva.UsuarioId);
+            if (usuario != null)
+            {
+                // avisar n8n
+                await _n8nService.EnviarReservaCreadaAsync(reserva, usuario.Nif);
+            }
+
             return null;
         }
 
