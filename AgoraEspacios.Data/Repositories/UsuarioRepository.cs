@@ -18,6 +18,12 @@ namespace AgoraEspacios.Data.Repositories
             return await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
         }
 
+        // Obtener usuario por NIF
+        public async Task<Usuario?> GetByNifAsync(string nif)
+        {
+            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Nif == nif);
+        }
+
         // Obtener usuario por id
         public async Task<Usuario?> GetByIdAsync(int id)
         {
@@ -55,6 +61,11 @@ namespace AgoraEspacios.Data.Repositories
         public async Task<bool> ExistsByEmailAsync(string email)
         {
             return await _context.Usuarios.AnyAsync(u => u.Email == email);
+        }
+
+        public async Task<bool> ExistsByNifAsync(string nif)
+        {
+            return await _context.Usuarios.AnyAsync(u => u.Nif == nif);
         }
     }
 }

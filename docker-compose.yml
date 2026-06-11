@@ -27,7 +27,11 @@ services:
       Jwt__Key: "JWTKeyDeDesarrollo_123456789_ClaveLarga"
       Frontend__Url: "http://localhost:5173"
       AdminUser__Password: "admin123"
+      N8nAdmin__Email: "n8n@agoraespacios.com"
+      N8nAdmin__Password: "n8n123"
+      N8nAdmin__Nif: "11111111A"
       Swagger__Enabled: "true"
+      N8n__ReservaCreadaWebhookUrl: ""
     networks:
       - agoraespaciosnet
 

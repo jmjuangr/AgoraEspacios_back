@@ -8,6 +8,8 @@ namespace AgoraEspacios.Models.DTOs
         public string Nombre { get; set; }
         public string Email { get; set; }
 
+        public string Nif { get; set; }
+
         // "Admin" | "User"
         public string Rol { get; set; }
     }
@@ -19,6 +21,10 @@ namespace AgoraEspacios.Models.DTOs
 
         [Required, EmailAddress, MaxLength(120)]
         public string Email { get; set; }
+
+
+        [Required, MinLength(9), MaxLength(9)]
+        public string Nif { get; set; }
 
         [Required, MinLength(6), MaxLength(100)]
         public string Password { get; set; }
@@ -35,6 +41,10 @@ namespace AgoraEspacios.Models.DTOs
 
         [Required, EmailAddress, MaxLength(120)]
         public string Email { get; set; }
+
+
+        [Required, MinLength(9), MaxLength(9)]
+        public string Nif { get; set; }
 
         [Required, MaxLength(20)]
         public string Rol { get; set; }

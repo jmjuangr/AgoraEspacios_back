@@ -29,6 +29,12 @@ namespace AgoraEspacios.Business.Services
             return await _usuarioRepository.GetByIdAsync(id);
         }
 
+        public async Task<bool> ExistsByNifAsync(string nif)
+        {
+            // Comparo el NIF ya limpio para evitar diferencias por espacios o minusculas
+            return await _usuarioRepository.ExistsByNifAsync(NormalizeNif(nif));
+        }
+
         public async Task<List<Usuario>> GetAllAsync()
         {
             //devolver lista completa usuarios
@@ -37,6 +43,9 @@ namespace AgoraEspacios.Business.Services
 
         public async Task<Usuario> CreateAsync(Usuario usuario)
         {
+            // guardar nif
+            usuario.Nif = NormalizeNif(usuario.Nif);
+
             // guardar nuevo usuario
             await _usuarioRepository.AddAsync(usuario);
             return usuario;
@@ -53,9 +62,17 @@ namespace AgoraEspacios.Business.Services
             if (existing.Email != usuario.Email && await _usuarioRepository.ExistsByEmailAsync(usuario.Email))
                 return (false, "Ya existe otro usuario con este email.");
 
-            // actualizo solo los datos editables y dejo la contraseña como estaba
+            // Limpio el NIF antes de comprobarlo y guardarlo
+            usuario.Nif = NormalizeNif(usuario.Nif);
+
+            // si cambia el NIF, reviso que no lo tenga otro usuario
+            if (existing.Nif != usuario.Nif && await _usuarioRepository.ExistsByNifAsync(usuario.Nif))
+                return (false, "Ya existe otro usuario con este NIF.");
+
+            // actualizo solo los datos editables y dejo la contrasena como estaba
             existing.Nombre = usuario.Nombre;
             existing.Email = usuario.Email;
+            existing.Nif = usuario.Nif;
             existing.Rol = usuario.Rol;
 
             await _usuarioRepository.UpdateAsync(existing);
@@ -72,6 +89,12 @@ namespace AgoraEspacios.Business.Services
             // si existe, se elimina desde el repositorio
             await _usuarioRepository.DeleteAsync(existing);
             return (true, "Usuario eliminado correctamente.");
+        }
+
+        private static string NormalizeNif(string nif)
+        {
+            // Quito espacios y pongo letras en mayuscula
+            return nif.Trim().ToUpperInvariant();
         }
     }
 }
